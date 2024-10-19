@@ -3,12 +3,13 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class GoogleMapScreen extends StatefulWidget {
-  GoogleMapScreen({
+  const GoogleMapScreen({
     super.key,
     required this.latlong,
   });
   final LatLng latlong;
   @override
+  // ignore: library_private_types_in_public_api
   _GoogleMapScreenState createState() => _GoogleMapScreenState();
 }
 
@@ -21,7 +22,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   void initState() {
     _initialPosition = widget.latlong;
     _getAddressFromLatLng(_initialPosition!);
-    // TODO: implement initState
     super.initState();
   }
 
@@ -46,7 +46,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
         _currentAddress = "${place.locality}, ${place.country}";
       });
     } catch (e) {
-      print("Error occurred while fetching location: $e");
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('"Error occurred while fetching location: $e"')));
     }
   }
 
@@ -55,7 +56,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Google Map Example'),
+        title: const Text('Google Map Example'),
       ),
       body: Column(
         children: [
@@ -73,7 +74,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               ),
               markers: {
                 Marker(
-                  markerId: MarkerId('initialMarker'),
+                  markerId: const MarkerId('initialMarker'),
                   position: _initialPosition!,
                   infoWindow: InfoWindow(
                     title: _currentAddress ?? '',

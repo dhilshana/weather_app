@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/constants/constants.dart';
 import 'package:weather_app/models/hourlyForecasteModel.dart';
+import 'package:weather_app/screens/currentWeatherScreen.dart';
 import 'package:weather_app/screens/homeScreen.dart';
+import 'package:weather_app/screens/searchScreen.dart';
 import 'package:weather_app/services/weatherServices.dart';
 import 'package:weather_app/utils/helper.dart';
 
@@ -19,19 +21,20 @@ class _RootScreenState extends State<RootScreen> {
 Helper dateTime = Helper();
 Position? position;
 
-  List<Widget> screens = const [HomeScreen(), SizedBox(), Scaffold()];
+  List<Widget> screens = const [HomeScreen(), SizedBox(), CurrentWeatherScreen()];
 
   int selectedIndex = 0;
 
   Future<void> currentPosition() async{
     try {
       position = await Geolocator.getCurrentPosition(
+        // ignore: deprecated_member_use
         desiredAccuracy: LocationAccuracy.high,
       );
       setState(() {});
     } catch (e) {
-      print("Error getting location: $e");
-      // Handle the error or show a message to the user
+       // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('"Error getting location: $e"')));
     }
     return;
   }
@@ -67,19 +70,30 @@ Position? position;
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
                 children: [
-                  Text(
-                    'Hourly Forecast',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w500),
+                  Row(
+                    children: [
+                      Text(
+                        'Hourly Forecast',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const Searchscreen()));
+                        },
+                        child: const Icon(Icons.search,color: Colors.white,size: 30,),
+                      )
+                    ],
                   ),
                   SizedBox(
                     height: 10.h,
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                             offset: Offset(0, 0),
                             blurRadius: 10,
@@ -97,10 +111,10 @@ Position? position;
                     future: WeatherServices().fetchHourlyData(position!.latitude, position!.longitude),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
               
-                        return Text(snapshot.error.toString(),style: TextStyle(
+                        return Text(snapshot.error.toString(),style: const TextStyle(
                           color: Colors.white
                         ),);
                       } else {
@@ -120,8 +134,8 @@ Position? position;
 
                         final iconUrl = 'http://openweathermap.org/img/wn/$iconCode@2x.png';
                               return Container(
-                                margin: EdgeInsets.all(10),
-                                padding: EdgeInsets.symmetric(vertical: 30,horizontal: 10),
+                                margin: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 10),
                                 width: 100.w,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50.r),

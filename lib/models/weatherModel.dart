@@ -10,8 +10,8 @@ class WeatherModel {
   int? windDirection;
   Map<String,dynamic>? rainfall;
   int? humidity;
-  String? airQuality;
-  String? uvIndex;
+  int? pressure;
+  double? feelsLike;
 
   WeatherModel({
       this.temp,
@@ -25,10 +25,11 @@ class WeatherModel {
       this.windDirection,
       this.rainfall,
       this.humidity,
-      this.airQuality,
-      this.uvIndex,});
+      this.pressure,
+      this.feelsLike,});
 
     factory WeatherModel.fromJson(Map<String,dynamic> json){
+      
       return WeatherModel(
         temp: json['main']['temp']-273.15, 
         description:json['weather'][0]['description'], 
@@ -41,7 +42,7 @@ class WeatherModel {
         windDirection:json['wind']['deg'], 
         rainfall:json['rain'], 
         humidity:json['main']['humidity'], 
-        airQuality:'empty', 
-        uvIndex:'empty');
+        pressure:json['main']['pressure'], 
+        feelsLike:json['main']['feels_like']-273.15);
     }
 }

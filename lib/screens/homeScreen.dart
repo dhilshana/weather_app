@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
@@ -28,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
               'Location services are disabled. Please enable the services')));
@@ -37,12 +40,14 @@ class _HomeScreenState extends State<HomeScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Location permissions are denied')));
         return;
       }
     }
     if (permission == LocationPermission.deniedForever) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
               'Location permissions are permanently denied, we cannot request permissions.')));
@@ -50,13 +55,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     try {
       position = await Geolocator.getCurrentPosition(
+        // ignore: deprecated_member_use
         desiredAccuracy: LocationAccuracy.high,
       );
       setState(() {});
 
     } catch (e) {
-      print("Error getting location: $e");
-      // Handle the error or show a message to the user
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('"Error getting location: $e"')));
+    
     }
     return;
   }
@@ -86,10 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context,snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
                   
-                            return Text('Error occured ${snapshot.error}',style: TextStyle(
+                            return Text('Error occured ${snapshot.error}',style: const TextStyle(
                               color: Colors.white
                             ),);
                           } else {
@@ -98,21 +105,21 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${_weather?.place}',
+                                  '${_weather.place}',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 28.sp,
                                       fontWeight: FontWeight.w500),
                                 ),
                                 Text(
-                                  '${_weather?.temp?.toStringAsFixed(2)}°C',
+                                  '${_weather.temp?.toStringAsFixed(2)}°C',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 40.sp,
                                       fontWeight: FontWeight.w500),
                                 ),
                                 Text(
-                                  '${_weather?.description?.toUpperCase()}',
+                                  '${_weather.description?.toUpperCase()}',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18.sp,
@@ -130,14 +137,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 GoogleMapScreen(latlong: LatLng(position!.latitude, position!.longitude),)),
                                       );
                                     },
-                                    child: Text('Show Map'))
+                                    child: const Text('Show Map'))
                               ],
                             );
                           }
                         },
                       ),
                     )
-                  : CircularProgressIndicator(),
+                  : const CircularProgressIndicator(),
             ),
             Positioned(
                 bottom: 50,
